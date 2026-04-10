@@ -120,7 +120,7 @@ const translations = {
         "services.item2.title": "Demolición y Retiro de Escombros",
         "services.item2.desc": "Demoliciones residenciales y comerciales pequeñas o medianas realizadas de forma segura y eficiente. También retiramos escombros de construcción cumpliendo con los requisitos de obras en NYC.",
 
-        "services.item3.label": "Roofing y Masonry",
+        "services.item3.label": "Techos y Mampostería",
         "services.item3.title": "Techos, Hormigón y Trabajos en Ladrillo",
         "services.item3.desc": "Soluciones profesionales para reparaciones de techos, trabajos en concreto y proyectos de mampostería. Desde filtraciones hasta senderos, ladrillo y mejoras exteriores.",
 
@@ -128,7 +128,7 @@ const translations = {
         "services.item4.title": "Servicios Locales de Mudanza y Delivery",
         "services.item4.desc": "Servicios de mudanza local rápidos y seguros en el área metropolitana de Nueva York. También ofrecemos entregas confiables de materiales de construcción, equipos y otros insumos.",
 
-        "services.item5.label": "Yard Waste y Limpiezas Profundas",
+        "services.item5.label": "Residuos de Jardín y Limpiezas Profundas",
         "services.item5.title": "Retiro de Residuos de Jardín y Limpiezas Estacionales",
         "services.item5.desc": "Mantené tu espacio exterior limpio y listo para el próximo proyecto. Retiramos ramas, hojas y residuos orgánicos, ideal para limpiezas profundas, preparación de paisajismo y trabajos de fin de temporada.",
 
@@ -140,15 +140,15 @@ const translations = {
         "portfolio.item3": "Demolición Interior Segura",
         "portfolio.item4": "Limpieza de Residuos de Jardín",
 
-        "slider.junk": "JUNK REMOVAL",
+        "slider.junk": "REMOCIÓN DE RESIDUOS",
         "slider.demolition": "DEMOLICIÓN",
-        "slider.cleanouts": "CLEAN OUTS",
+        "slider.cleanouts": "LIMPIEZAS PROFUNDAS",
         "slider.yard": "RESIDUOS DE JARDÍN",
         "slider.moving": "MUDANZAS",
         "slider.delivery": "DELIVERY",
         "slider.roofing": "TECHOS",
         "slider.concrete": "HORMIGÓN",
-        "slider.brick": "LADRILLO",
+        "slider.brick": "CONSTRUCCIÓN EN LADRILLO",
         "slider.nyc": "LIMPIEZAS NYC",
 
         "cta.title": "¿Necesitás un espacio limpio o una demolición segura?",
@@ -175,9 +175,9 @@ function getInitialLanguage() {
 }
 
 function updateToggleLabels(lang) {
-    const nextLabel = lang === "en" ? "ES" : "EN";
-    document.querySelectorAll("[data-lang-toggle-label]").forEach(el => {
-        el.textContent = nextLabel;
+    document.querySelectorAll(".lang-toggle").forEach(btn => {
+        btn.classList.remove("is-en", "is-es");
+        btn.classList.add(lang === "en" ? "is-en" : "is-es");
     });
 }
 
@@ -185,21 +185,29 @@ function setLanguage(lang) {
     const dict = translations[lang];
     if (!dict) return;
 
-    document.documentElement.lang = lang;
+    document.body.classList.add("lang-switching");
 
-    document.querySelectorAll("[data-i18n]").forEach(el => {
-        const key = el.getAttribute("data-i18n");
-        if (!dict[key]) return;
+    setTimeout(() => {
+        document.documentElement.lang = lang;
 
-        if (dict[key].includes("<br>") || dict[key].includes("<a ")) {
-            el.innerHTML = dict[key];
-        } else {
-            el.textContent = dict[key];
-        }
-    });
+        document.querySelectorAll("[data-i18n]").forEach(el => {
+            const key = el.getAttribute("data-i18n");
+            if (!dict[key]) return;
 
-    localStorage.setItem("lang", lang);
-    updateToggleLabels(lang);
+            if (dict[key].includes("<br>") || dict[key].includes("<a ")) {
+                el.innerHTML = dict[key];
+            } else {
+                el.textContent = dict[key];
+            }
+        });
+
+        localStorage.setItem("lang", lang);
+        updateToggleLabels(lang);
+
+        requestAnimationFrame(() => {
+            document.body.classList.remove("lang-switching");
+        });
+    }, 240);
 }
 
 function toggleLanguage() {
